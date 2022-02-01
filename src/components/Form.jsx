@@ -5,6 +5,8 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import { Button, TextField } from "@mui/material";
 import { useState } from "react";
+import { useRef } from "react";
+import { saveStudentData } from "../utils/api";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -15,7 +17,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function BasicGrid() {
-    //One Variable
+  //One Variable
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -23,13 +25,20 @@ export default function BasicGrid() {
     gender: "",
   });
 
+  const firstNameRef = useRef();
+
+  const handleRefObject = (e) => {
+    console.log(e);
+    console.log(firstNameRef.current.value);
+  };
+
   const handleChange = (e) => {
-    console.log(formData)
+    console.log(formData);
     setFormData({
-        ...formData,
-        [e.target.name] : e.target.value
-    })
-    console.log(formData)
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+    console.log(formData);
   };
 
   return (
@@ -37,6 +46,11 @@ export default function BasicGrid() {
       <form
         onSubmit={(event) => {
           event.preventDefault();
+          // console.log("Inside OnSubmit");
+          saveStudentData(formData).then((res) => {
+            console.log(res);
+            window.alert("Added Successfully");
+          });
         }}
       >
         <Grid container spacing={2}>
@@ -49,8 +63,11 @@ export default function BasicGrid() {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                
+                // inputRef={firstNameRef}
+                required
+                //onChange={handleRefObject}
               />
+              {/* <input ref={firstNameRef} onChange={handleRefObject} /> */}
             </Item>
           </Grid>
           <Grid item xs={3}>
@@ -62,6 +79,7 @@ export default function BasicGrid() {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
+                required
               />
             </Item>
           </Grid>
@@ -74,6 +92,7 @@ export default function BasicGrid() {
                 name="age"
                 value={formData.age}
                 onChange={handleChange}
+                required
               />
             </Item>
           </Grid>
@@ -86,6 +105,7 @@ export default function BasicGrid() {
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
+                required
               />
             </Item>
           </Grid>
